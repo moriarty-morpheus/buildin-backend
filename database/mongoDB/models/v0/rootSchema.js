@@ -16,16 +16,16 @@ const Schema = mongoose.Schema;
  * Root Schema
  */
 const rootSchema = {
-    createdDate: {
+    created_date: {
         type: Date,
         default: Date.now
     },
-    updatedDates: {
-        type: [Date],
+    updated_date: {
+        type: Date,
         default: null
     },
-    deletedDates: {
-        type: [Date],
+    deleted_date: {
+        type: Date,
         default: null
     }
 }

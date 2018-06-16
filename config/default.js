@@ -10,6 +10,7 @@ const mongoConfig = {
         users: 'users',
         products: 'products',
         sessions: 'sessions',
+        passwordTokens: 'password_tokens'
     },
     connections: {
         development: {

@@ -12,7 +12,9 @@ const responseStore = require('../../utility/store').responseStore;
 const Users = new actionsStore.Users('v0');
 const gmail = require('../../utility/gmail');
 const gmailConfig = require('config').get('gmailConfig');
+const FROM_EMAIL = gmailConfig.from_email_id;
 const constants = require('./constants');
+const MESSAGES = require('./constants').messages;
 const Q = require('q');
 const jwt = require('jsonwebtoken');
 const _ = require('underscore');
@@ -21,18 +23,24 @@ const _ = require('underscore');
  */
 const helper = {};
 
-helper.sendEmailToAdmin = function(req, res, admin, user_name) {
+helper.sendRegiterEmails = function(req, res, userEmail, userName) {
 	let deferred = Q.defer();
-	let mailPromise = gmail.sendEmail(
-		gmailConfig.admin_id, gmailConfig.from_email_id,
-		constants.messages.register_admin.sub,
-		constants.messages.register_admin.msg.replace('USER_NAME',user_name)
-	);
-	mailPromise.then(function(result) {
-		if (result.status === 200) {
-			deferred.resolve(result)
+  let mailPromises = [];
+  mailPromises.push(gmail.sendEmail(
+		gmailConfig.admin_id, FROM_EMAIL,
+		MESSAGES.registerAdmin.sub,
+		MESSAGES.registerAdmin.msg.replace('USER_NAME', userName)
+	));
+  mailPromises.push(gmail.sendEmail(
+    userEmail, FROM_EMAIL,
+    MESSAGES.registerUser.sub,
+    MESSAGES.registerUser.msg.replace('USER_NAME', userName)
+  ));
+	Q.all(mailPromises).then(function(results) {
+		if (results[0].status === 200 && results[1].status === 200) {
+			deferred.resolve(results)
 		} else {
-			deferred.reject(result);
+			deferred.reject(results);
 		}
 	}, function(error) {
 		deferred.reject(error);
@@ -40,12 +48,13 @@ helper.sendEmailToAdmin = function(req, res, admin, user_name) {
 	return deferred.promise;
 }
 
-helper.sendEmailToUser = function(req, res, user_email, user_name) {
-	let deferred = Q.defer();
-	let mailPromise = gmail.sendEmail(
-		user_email, gmailConfig.from_email_id,
-		constants.messages.register_user.sub,
-		constants.messages.register_user.msg.replace('USER_NAME',user_name)
+helper.sendForgotPasswordEmail = function(req, res, userEmail, userName, token) {
+  let deferred = Q.defer();
+  let body = MESSAGES.forgotPassword.msg;
+  body = body.replace('USER_NAME', userName);
+  body = body.replace('TOKEN', token);
+  let mailPromise = gmail.sendEmail(
+		userEmail, FROM_EMAIL, MESSAGES.forgotPassword.sub, body
 	);
 	mailPromise.then(function(result) {
 		if (result.status === 200) {

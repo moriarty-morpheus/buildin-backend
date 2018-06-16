@@ -70,7 +70,7 @@ const responses = {
     405: {
         "code": 405,
         "status": "Method not allowed.",
-        "message": "Incorrect method. Try with ",
+        "message": "Incorrect method.",
         "error": {}
     },
     406: {
@@ -110,7 +110,8 @@ function responseStore() {
 }
 
 responseStore.get = function (type) {
-    return responses[type];
+  let obj = JSON.parse(JSON.stringify(responses[type]));
+  return obj;
 }
 
 module.exports = {

@@ -116,7 +116,8 @@ function responseStore() {
 }
 
 responseStore.get = function (type) {
-    return responses[type];
+  let obj = JSON.parse(JSON.stringify(responses[type]));
+  return obj;
 }
 
 module.exports = {

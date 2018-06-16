@@ -8,21 +8,136 @@ const express = require('express');
 const passport = require('passport');
 const authRouter = express.Router();
 const authController = require('./controller');
+const validator = require('../middleware/validation');
 
 authRouter.post(
     '/register',
-    authController.register
+    function(req, res, next) {
+      req.validation = {
+
+      },
+      next();
+    },
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [],
+        body: [{
+          name: "user_name",
+          validations: ["required"]
+        }, {
+          name: "email",
+          validations: ["required", "isEmail"]
+        }, {
+          name: "password",
+          validations: ["required","isStrongPassword"]
+        }, {
+          name: "condominium",
+          validations: ["required"]
+        }]
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.register,
+    authController.sendResponse
 );
 
 authRouter.post(
     '/login',
-    authController.login
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [],
+        body: [{
+          name: "user_name",
+          validations: ["required"]
+        }, {
+          name: "password",
+          validations: ["required"]
+        }]
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.login,
+    authController.sendResponse
+);
+
+authRouter.post(
+    '/forgot_password',
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [],
+        body: [{
+          name: "user_name",
+          validations: ["required"]
+        }, {
+          name: "email",
+          validations: ["required"]
+        }]
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.forgotPasswordToken,
+    authController.sendResponse
+);
+
+authRouter.post(
+    '/reset_password',
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [{
+          name: "id",
+          validations: ["required"]
+        }],
+        body: [{
+          name: "password",
+          validations: ["required"]
+        }]
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.resetPassword,
+    authController.sendResponse
+);
+
+authRouter.get(
+    '/reset_password',
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [{
+          name: "id",
+          validations: ["required"]
+        }],
+        body: []
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.resetPasswordCheck,
+    authController.sendResponse
 );
 
 authRouter.delete(
     '/logout',
     passport.authenticate('bearer',{session:false}),
-    authController.logout
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [],
+        body: []
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.logout,
+    authController.sendResponse
 );
 
 module.exports = authRouter;

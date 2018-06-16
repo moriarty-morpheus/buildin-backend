@@ -7,96 +7,44 @@
 /**
   import npm modules
 */
-const winston = require('winston');
-winston.emitErrs = true;
-let debug = new winston.Logger({
-    levels: {
-        debug: 0
-    },
+const {createLogger, format, transports} = require('winston');
+const debug = createLogger({
+    level: 'debug',
+    format: format.combine(format.colorize(), format.simple()),
     transports: [
-        new winston.transports.DailyRotateFile({
-            level: 'debug',
+        new transports.Console(),
+        new transports.File({
             filename: 'debug.log',
-            maxsize: 5242880,
-            dirname: __dirname + '/../../logs',
-            colorize: true,
-            handleExceptions: true
-        }),
-        new winston.transports.Console ({
             level: 'debug',
-            colorize: true,
-            handleExceptions: true,
-            timestamp: true
+            dirname: __dirname + '/../../logs',
         })
     ],
     exitOnError: false
 });
 
-let info = new winston.Logger({
-    levels: {
-        info: 1
-    },
+const info = createLogger({
+    level: 'info',
+    format: format.combine(format.colorize(), format.simple()),
     transports: [
-        new winston.transports.DailyRotateFile({
-            level: 'info',
+        new transports.Console(),
+        new transports.File({
             filename: 'info.log',
-            maxsize: 5242880,
-            dirname: __dirname + '/../../logs',
-            colorize: true,
-            handleExceptions: true,
-            timestamp: true
-        }),
-        new winston.transports.Console({
             level: 'info',
-            colorize: true,
-            handleExceptions: true,
-            timestamp: true,
+            dirname: __dirname + '/../../logs',
         })
     ],
     exitOnError: false
 });
 
-let warn = new winston.Logger({
-    levels: {
-        warn: 2
-    },
+const error = createLogger({
+    level: 'error',
+    format: format.combine(format.colorize(), format.simple()),
     transports: [
-        new winston.transports.DailyRotateFile({
-            level: 'warn',
-            filename: 'warn.log',
-            maxsize: 5242880,
-            dirname: __dirname + '/../../logs',
-            colorize: true,
-            handleExceptions: true,
-            timestamp: true
-        }),
-        new winston.transports.Console({
-            level: 'warn',
-            colorize: true,
-            handleExceptions: true,
-            timestamp: true
-        })
-    ],
-    exitOnError: false
-});
-
-let error = new winston.Logger({
-    levels: {
-        error: 3
-    },
-    transports: [
-        new winston.transports.DailyRotateFile({
+        new transports.Console(),
+        new transports.File({
+            filename: 'error.log' ,
             level: 'error',
-            filename: 'error.log',
-            maxsize: 5242880,
             dirname: __dirname + '/../../logs',
-            colorize: true,
-            handleExceptions: true
-        }),
-        new winston.transports.Console({
-            level: 'error',
-            colorize: true,
-            handleExceptions: true
         })
     ],
     exitOnError: false
@@ -125,17 +73,6 @@ let logger = {
         }
         info.info(msg);
     },
-    warn: function(msg, param, object) {
-        if(param && object){
-            warn.warn(msg, param, object);
-            return;
-        }
-        if(param){
-            warn.warn(msg, param);
-            return;
-        }
-        warn.warn(msg);
-    },
     error: function(msg, param, object) {
         if(param && object){
             error.error(msg, param, object);
@@ -146,27 +83,21 @@ let logger = {
             return;
         }
         error.error(msg);
-    },
-    log: function(level, msg, param, object) {
-        let lvl = exports[level];
-        lvl(msg, param, object);
-    },
-    stream:{
-        write: function(message){
-            debug.debug(message);
-        }
     }
 };
 
-let userLogObj = function userLogObj(
+let logFn = function logFn(
                         req, data, error) {
     let loggerObj = {};
-    console.log(req.get('User-Agent'));
-    loggerObj.user = {
-        id: req.user.user_id,
-        firstname: req.user.first_name,
-        lastname: req.user.last_name,
-    };
+    if (req.user) {
+        loggerObj.user = {
+            id: req.user.user_id,
+            firstname: req.user.first_name,
+            lastname: req.user.last_name,
+        };
+    } else {
+        loggerObj.user = null;
+    }
     loggerObj.reqId = req.permission_id;
     loggerObj.route = req.baseUrl + req.url;
     loggerObj.method = req.method;
@@ -185,5 +116,5 @@ let userLogObj = function userLogObj(
 
 module.exports = {
     logger: logger,
-    userLogObj: userLogObj
+    logFn: logFn
 };
