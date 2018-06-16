@@ -1,8 +1,0 @@
-# config file
-.env
-
-# log file
-logs/*.log
-
-# node modules
-node_modules
