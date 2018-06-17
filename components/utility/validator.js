@@ -3,7 +3,7 @@
 const _ = require('underscore');
 const validator = {
   required: function(value) {
-    if (value) {
+    if (value && typeof(value) === 'string') {
       value = value.trim();
     }
     if (value === "" || value === undefined || value === null || value === NaN) {

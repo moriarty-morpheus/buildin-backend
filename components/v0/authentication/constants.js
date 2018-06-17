@@ -1,5 +1,5 @@
 const constants = {};
-const forgotPasswordLink = 'http://103.75.56.120:3000/api/v0/auth/reset_password?id=TOKEN';
+const forgotPasswordLink = 'http://192.168.0.7:8080?id=TOKEN';
 constants.messages = {
 	registerAdmin: {
 		sub: "User Registered",
