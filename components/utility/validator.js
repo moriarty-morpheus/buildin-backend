@@ -23,16 +23,8 @@ const validator = {
     }
   },
   isStrongPassword: function (value) {
-    if (value.length < 6) {
-      return false;
-    }
-    if (!value.match(/[0-9]/g)) {
-      return false;
-    }
-    if (!value.match(/[!@#\$%\^\&*\)\(+=._-]/g)) {
-      return false;
-    }
-    return true;
+    let regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+    return regExp.test(value);
   },
   isEmail: function(value) {
     let emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

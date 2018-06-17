@@ -44,6 +44,14 @@ validator.validateReq = function(req, res, next) {
             message: message,
             validation: validations[p]
           }
+          logger.debug(
+            "Validation Failed",
+            logFn(req, null, response)
+          );
+          logger.error(
+            "Validation Failed",
+            logFn(req, null, response)
+          );
           return res.status(422).send(response);
         }
       }
@@ -69,6 +77,14 @@ validator.validateReq = function(req, res, next) {
             message: message,
             validation: validations[p]
           }
+          logger.debug(
+            "Validation Failed",
+            logFn(req, null, response)
+          );
+          logger.error(
+            "Validation Failed",
+            logFn(req, null, response)
+          );
           return res.status(422).send(response);
         }
       }
@@ -94,6 +110,14 @@ validator.validateReq = function(req, res, next) {
             message: message,
             validation: validations[p]
           }
+          logger.debug(
+            "Validation Failed",
+            logFn(req, null, response)
+          );
+          logger.error(
+            "Validation Failed",
+            logFn(req, null, response)
+          );
           return res.status(422).send(response);
         }
       }
