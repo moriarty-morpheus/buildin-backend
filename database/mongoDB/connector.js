@@ -5,6 +5,7 @@
  * Import node modules
  */
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 const config = require('config');
 require('dotenv').load();
 const dbEnv = process.env.MONGO_ENV;

@@ -14,10 +14,10 @@ const mongoConfig = {
     },
     connections: {
         development: {
-            v0: 'mongodb://127.0.0.1:27017/dailyAid'
+            v0: process.env.MONGO_URL
         },
         local: {
-            v0: 'mongodb://127.0.0.1:27017/dailyAid'
+            v0: process.env.MONGO_URL
         }
     }
 }
