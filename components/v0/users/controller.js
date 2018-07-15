@@ -28,6 +28,45 @@ const controller = {};
  *  @param {object}  res - response object.
  *  @return {object}
  */
+controller.getUserData = function(req, res, next) {
+  logger.debug('getUserData controller', logFn(req, null, null));
+  logger.info('getUserData controller', logFn(req, null, null));
+  let usersListPromise = Users.getAllUsers({"user_id": req.user.user_id});
+  let response;
+  usersListPromise.then(function(usersListResult) {
+    if (usersListResult.code === 200) {
+      if (usersListResult.data.length > 0) {
+        response = responseStore.get(200);
+        response.data = usersListResult.data[0];
+        res.finalResponse = response;
+        res.finalMessage = "getUserData Successful";
+        next();
+      } else {
+        response = responseStore.get(404);
+        res.finalResponse = response;
+        res.finalMessage = "getUserData Not Found Error";
+        next();
+      }
+    } else {
+      response = responseStore.get(500);
+      res.finalResponse = response;
+      res.finalMessage = "getUserData usersListPromise failed";
+      next();
+    }
+  }, function(error) {
+    res.error = error;
+    res.finalResponse = response;
+    res.finalMessage = "getUserData usersListPromise failed";
+    next();
+  });
+}
+
+/**
+ *  Get list of users
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.getUsersList = function(req, res, next) {
   logger.debug('getUsersList controller', logFn(req, null, null));
   logger.info('getUsersList controller', logFn(req, null, null));
@@ -37,7 +76,8 @@ controller.getUsersList = function(req, res, next) {
     if (usersListResult.code === 200) {
       if (usersListResult.data.length > 0) {
         for (let k = 0; k < usersListResult.data.length; k++) {
-          _.pick(usersListResult.data[k], componentConstants.fieldsInResponse.dashboard.usersList);
+          _.pick(usersListResult.data[k],
+            componentConstants.fieldsInResponse.usersList);
         }
         response = responseStore.get(200);
         response.data = usersListResult.data;

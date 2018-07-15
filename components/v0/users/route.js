@@ -12,6 +12,7 @@ const authorization = require('../middleware/authorization');
 const validator = require('../middleware/validation');
 
 usersRouter.use(passport.authenticate('bearer',{session:false}));
+
 usersRouter.get(
     '/user_list',
     function(req, res, next) {
@@ -31,6 +32,27 @@ usersRouter.get(
     usersController.getUsersList,
     usersController.sendResponse
 );
+
+usersRouter.get(
+    '/my_data',
+    function(req, res, next) {
+    	req.permission_id = 'get_users_list';
+    	next();
+    },
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [],
+        body: []
+      }
+      next();
+    },
+    authorization.isAuthorized,
+    validator.validateReq,
+    usersController.getUserData,
+    usersController.sendResponse
+);
+
 
 usersRouter.post(
     '/approve',

@@ -41,7 +41,10 @@ complaintsRouter.get(
   },
   function(req, res, next) {
     req.validation = {
-      params: [],
+      params: [{
+        name: "user_id",
+        validations: ["required"]
+      }],
       query: [],
       body: []
     }
@@ -61,7 +64,10 @@ complaintsRouter.get(
   },
   function(req, res, next) {
     req.validation = {
-      params: [],
+      params: [{
+        name: "complaint_id",
+        validations: ["required"]
+      }],
       query: [],
       body: []
     }
@@ -81,7 +87,10 @@ complaintsRouter.put(
   },
   function(req, res, next) {
     req.validation = {
-      params: [],
+      params: [{
+        name: "complaint_id",
+        validations: ["required"]
+      }],
       query: [],
       body: []
     }
@@ -101,7 +110,10 @@ complaintsRouter.delete(
   },
   function(req, res, next) {
     req.validation = {
-      params: [],
+      params: [{
+        name: "complaint_id",
+        validations: ["required"]
+      }],
       query: [],
       body: []
     }
@@ -124,7 +136,19 @@ complaintsRouter.post(
       req.validation = {
         params: [],
         query: [],
-        body: []
+        body: [{
+          name: "location",
+          validations: ["required"]
+        }, {
+          name: "title",
+          validations: ["required"]
+        }, {
+          name: "details",
+          validations: ["required"]
+        }, {
+          name: "name",
+          validations: ["required"]
+        }]
       }
       next();
     },
