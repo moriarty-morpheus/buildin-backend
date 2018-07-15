@@ -39,6 +39,13 @@ const rootRoutes = function(app) {
             '/api/v' + apiVersions[k] + '/dashboard',
             require('./v' + k + '/dashboard/route')
         );
+        /**
+         * Complaints Gateway
+         */
+        app.use(
+            '/api/v' + apiVersions[k] + '/complaints',
+            require('./v' + k + '/complaints/route')
+        );
     }
 };
 

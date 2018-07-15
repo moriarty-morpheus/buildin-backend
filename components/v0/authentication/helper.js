@@ -7,9 +7,6 @@ require('dotenv').load();
 /**
  * Import Required Project Modules
  */
-const actionsStore = require('../../../database/store').actionsStore;
-const responseStore = require('../../utility/store').responseStore;
-const Users = new actionsStore.Users('v0');
 const gmail = require('../../utility/gmail');
 const gmailConfig = require('config').get('gmailConfig');
 const FROM_EMAIL = gmailConfig.from_email_id;
@@ -23,6 +20,14 @@ const _ = require('underscore');
  */
 const helper = {};
 
+/**
+ *  Send email to the user and admin when the user registers
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @param {string}  userEmail - email of the user.
+ *  @param {string}  userName - name of the user.
+ *  @return {object}
+ */
 helper.sendRegiterEmails = function(req, res, userEmail, userName) {
 	let deferred = Q.defer();
   let mailPromises = [];
@@ -48,6 +53,15 @@ helper.sendRegiterEmails = function(req, res, userEmail, userName) {
 	return deferred.promise;
 }
 
+/**
+ *  Send forgot password link to a user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @param {string}  userEmail - email of the user.
+ *  @param {string}  userName - name of the user.
+ *  @param {string}  token - forgot password token.
+ *  @return {object}
+ */
 helper.sendForgotPasswordEmail = function(req, res, userEmail, userName, token) {
   let deferred = Q.defer();
   let body = MESSAGES.forgotPassword.msg;
@@ -68,6 +82,13 @@ helper.sendForgotPasswordEmail = function(req, res, userEmail, userName, token) 
 	return deferred.promise;
 }
 
+/**
+ *  create jwt token for a logged in user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @param {object}  userObj - user object.
+ *  @return {object}
+ */
 helper.createTokenObj = function(req, res, userObj) {
 	let token = jwt.sign(req.body, 'unoprojecto');
 	let accessTokenObj = {

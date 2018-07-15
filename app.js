@@ -15,7 +15,11 @@ app.use(cors());
 * Call route file
 */
 require('./database/mongoDB/connector');
-require('./components/gateway')(app);
+try {
+  require('./components/gateway')(app);
+} catch (error) {
+  console.log(error,"=================0");
+}
 
 /*
 * Middleware for error caching

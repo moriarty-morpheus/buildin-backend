@@ -1,5 +1,21 @@
+/*jshint node: true */
+"use strict";
+/**
+ * Import Required Node Modules
+ */
+require('dotenv').load();
+/**
+ * Import Required Project Modules
+ */
+const forgotPasswordLink = process.env.FORGOT_PASSWORD_LINK;
+/**
+ * Authentication constants
+ */
 const constants = {};
-const forgotPasswordLink = 'http://192.168.0.7:8080?id=TOKEN';
+
+/**
+ * Email messages
+ */
 constants.messages = {
 	registerAdmin: {
 		sub: "User Registered",

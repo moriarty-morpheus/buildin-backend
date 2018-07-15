@@ -16,12 +16,19 @@ const constants = require('./constants');
 const Q = require('q');
 const _ = require('underscore');
 /**
- * Authentication helper
+ * Complaints helper
  */
 const helper = {};
 
+/**
+ *  create jwt token for a logged in user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @param {string}  user_email - email of the user.
+ *  @param {string}  user_email - body of the email.
+ *  @return {object}
+ */
 helper.sendApprovalStatusEmailToUser = function(req, res, user_email, body) {
-	console.log('---------------1234', user_email, body)
 	let deferred = Q.defer();
 	let mailPromise = gmail.sendEmail(
 		user_email, gmailConfig.from_email_id,

@@ -4,6 +4,7 @@
  * Import Required Node Modules
  */
 const Q = require('q');
+const _ = require('underscore');
 /**
  * Import Required Project Modules
  */
@@ -12,7 +13,6 @@ const responseStore = require('../../utility/store').responseStore;
 const logger = require('../../utility/userLogs').logger;
 const logFn = require('../../utility/userLogs').logFn;
 const constants = require('../../utility/constants');
-const _ = require('underscore');
 const helper = require('./helper');
 const Users = new actionsStore.Users('v0');
 const Sessions = new actionsStore.Sessions('v0');
@@ -22,6 +22,12 @@ const PasswordTokens = new actionsStore.PasswordTokens('v0');
  */
 const controller = {};
 
+/**
+ *  Register a new user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.register = function(req, res, next) {
   logger.debug('register controller', logFn(_.omit(req, "body"), null, null));
   logger.info('register controller', logFn(_.omit(req, "body"), null, null));
@@ -69,14 +75,14 @@ controller.register = function(req, res, next) {
             next();
           }, function(error) {
             response = responseStore.get(500);
-            response.error = error;
+            res.error = error;
             res.finalResponse = response;
             res.finalMessage = "register cntrl emailPromises error";
             next();
           })
         }, function(error) {
           response = responseStore.get(500);
-          response.error = error;
+          res.error = error;
           res.finalResponse = response;
           res.finalMessage = "register cntrl createUserPromise error";
           next();
@@ -84,20 +90,26 @@ controller.register = function(req, res, next) {
       }
     }, function(error) {
       response = responseStore.get(500);
-      response.error = error;
+      res.error = error;
       res.finalResponse = response;
       res.finalMessage = "register cntrl check data promises error";
       next();
     });
   } catch (error) {
     response = responseStore.get(500);
-    response.error = error;
+    res.error = error;
     res.finalResponse = response;
     res.finalMessage = "register cntrl error";
     next();
   }
 }
 
+/**
+ *  Login a user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.login = function(req, res, next) {
   logger.debug('login controller', logFn(_.omit(req, "body"), null, null));
   logger.info('login controller', logFn(_.omit(req, "body"), null, null));
@@ -128,7 +140,7 @@ controller.login = function(req, res, next) {
             next();
           }, function(error) {
             response = responseStore.get(500);
-            response.error = error;
+            res.error = error;
             res.finalResponse = response;
             res.finalMessage = "login cntrl createTokenPromise error";
             next();
@@ -152,20 +164,26 @@ controller.login = function(req, res, next) {
       }
     }, function(error) {
       response = responseStore.get(500);
-      response.error = error;
+      res.error = error;
       res.finalResponse = response;
       res.finalMessage = "login cntrl user promises error";
       next();
     });
   } catch (error) {
     response = responseStore.get(500);
-    response.error = error;
+    res.error = error;
     res.finalResponse = response;
     res.finalMessage = "login cntrl error";
     next();
   }
 }
 
+/**
+ *  Logout a user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.logout = function(req, res, next) {
   logger.debug('logout controller', logFn(req, null, null));
   logger.info('logout controller', logFn(req, null, null));
@@ -187,20 +205,26 @@ controller.logout = function(req, res, next) {
       }
     }, function(error) {
       response = responseStore.get(500);
-      response.error = error;
+      res.error = error;
       res.finalResponse = response;
       res.finalMessage = "logout cntrl deleteSessionPromise error";
       next();
     });
   } catch (error) {
     response = responseStore.get(500);
-    response.error = error;
+    res.error = error;
     res.finalResponse = response;
     res.finalMessage = "logout cntrl error";
     next();
   }
 }
 
+/**
+ *  Create a token if the user forgets password
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.forgotPasswordToken = function(req, res, next) {
   logger.debug('forgotPasswordToken controller', logFn(req, null, null));
   logger.info('forgotPasswordToken controller', logFn(req, null, null));
@@ -226,7 +250,6 @@ controller.forgotPasswordToken = function(req, res, next) {
               createTokenPromise = PasswordTokens.addToken(tokenObj);
             }
             createTokenPromise.then(function(createResult) {
-              console.log(createResult,'===lll');
               let emailPromise = helper.sendForgotPasswordEmail(
                 req, res, req.body.email, req.body.user_name,
                 createResult.data.password_token
@@ -242,14 +265,14 @@ controller.forgotPasswordToken = function(req, res, next) {
                 next();
               }, function(error) {
                 response = responseStore.get(500);
-                response.error = error;
+                resp.error = error;
                 res.finalResponse = response;
                 res.finalMessage = "forgotPasswordToken cntrl emailPromise error";
                 next();
               });
             }, function(error) {
               response = responseStore.get(500);
-              response.error = error;
+              res.error = error;
               res.finalResponse = response;
               res.finalMessage = "forgotPasswordToken cntrl createTokenPromise error";
               next();
@@ -257,7 +280,7 @@ controller.forgotPasswordToken = function(req, res, next) {
 
           }, function(error) {
             response = responseStore.get(500);
-            response.error = error;
+            res.error = error;
             res.finalResponse = response;
             res.finalMessage = "forgotPasswordToken cntrl getTokenPromise error";
             next();
@@ -271,20 +294,26 @@ controller.forgotPasswordToken = function(req, res, next) {
         }
       }, function(error) {
         response = responseStore.get(500);
-        response.error = error;
+        res.error = error;
         res.finalResponse = response;
         res.finalMessage = "forgotPasswordToken cntrl mongo error";
         next();
       });
   } catch (error) {
     response = responseStore.get(500);
-    response.error = error;
+    res.error = error;
     res.finalResponse = response;
     res.finalMessage = "forgotPasswordToken cntrl error";
     next();
   }
 }
 
+/**
+ *  Check if the user token for resetting password is valid
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.resetPasswordCheck = function(req, res, next) {
   logger.debug('resetPasswordCheck controller', logFn(_.omit(req, "body"), null, null));
   logger.info('resetPasswordCheck controller', logFn(_.omit(req, "body"), null, null));
@@ -308,20 +337,26 @@ controller.resetPasswordCheck = function(req, res, next) {
       }
     }, function(error) {
       response = responseStore.get(500);
-      response.error = error;
+      res.error = error;
       res.finalResponse = response;
       res.finalMessage = "resetPasswordCheck cntrl passwordTokenPromise error";
       next();
     });
   } catch (error) {
     response = responseStore.get(500);
-    response.error = error;
+    res.error = error;
     res.finalResponse = response;
     res.finalMessage = "resetPasswordCheck cntrl error";
     next();
   }
 }
 
+/**
+ *  Reset password for a user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.resetPassword = function(req, res, next) {
   logger.debug('resetPassword controller', logFn(_.omit(req, "body"), null, null));
   logger.info('resetPassword controller', logFn(_.omit(req, "body"), null, null));
@@ -343,14 +378,14 @@ controller.resetPassword = function(req, res, next) {
             next();
           } else {
             response = responseStore.get(500);
-            response.error = error;
+            res.error = error;
             res.finalResponse = response;
             res.finalMessage = "resetPassword cntrl error";
             next();
           }
         }, function(error) {
           response = responseStore.get(500);
-          response.error = error;
+          res.error = error;
           res.finalResponse = response;
           res.finalMessage = "resetPassword cntrl resetPasswordPromise error";
           next();
@@ -364,41 +399,49 @@ controller.resetPassword = function(req, res, next) {
       }
     }, function(error) {
       response = responseStore.get(500);
-      response.error = error;
+      res.error = error;
       res.finalResponse = response;
       res.finalMessage = "resetPassword cntrl passwordTokenPromise error";
       next();
     });
   } catch (error) {
     response = responseStore.get(500);
-    response.error = error;
+    res.error = error;
     res.finalResponse = response;
     res.finalMessage = "resetPassword cntrl error";
     next();
   }
 }
 
+/**
+ *  Function to handle response sending
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
 controller.sendResponse = function(req, res, next) {
+  let result = res.finalResponse;
   if (constants.responseCodes.error.indexOf(res.finalResponse.code) > -1) {
+    result.actualError = res.error;
     logger.debug(
       res.finalMessage,
-      logFn(_.omit(req, "body"), null, res.finalResponse)
+      logFn(_.omit(req, "body"), null, result)
     );
     logger.error(
       res.finalMessage,
-      logFn(_.omit(req, "body"), null, res.finalResponse)
+      logFn(_.omit(req, "body"), null, result)
     );
   } else {
     logger.debug(
       res.finalMessage,
-      logFn(_.omit(req, "body"), null, res.finalResponse)
+      logFn(_.omit(req, "body"), null, result)
     );
     logger.info(
       res.finalMessage,
-      logFn(_.omit(req, "body"), null, res.finalResponse)
+      logFn(_.omit(req, "body"), null, result)
     );
   }
-  return res.status(res.finalResponse.code).send(res.finalResponse);
+  return res.status(res.finalResponse.code).send(_.omit(res.finalResponse,"actualError"));
 }
 
 module.exports = controller;

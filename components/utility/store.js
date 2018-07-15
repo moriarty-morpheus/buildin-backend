@@ -16,7 +16,7 @@ const responses = {
     500: {
         "code": 500,
         "status": "Error",
-        "message": "Server Error!",
+        "message": "Internal Server Error!",
         "error": {}
     },
     501: {

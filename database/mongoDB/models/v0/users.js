@@ -41,7 +41,6 @@ userSchema.add({
     user_id: {type: String, required: true},
     permissions: {type: Array, required: false},
     roles: {type: Array, required: false}
-
 });
 
 /**
