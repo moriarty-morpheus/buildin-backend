@@ -6,13 +6,13 @@
 require('../authentication/strategy')
 const express = require('express');
 const passport = require('passport');
-const dashboardRouter = express.Router();
-const dashboardController = require('./controller');
+const usersRouter = express.Router();
+const usersController = require('./controller');
 const authorization = require('../middleware/authorization');
 const validator = require('../middleware/validation');
 
-dashboardRouter.use(passport.authenticate('bearer',{session:false}));
-dashboardRouter.get(
+usersRouter.use(passport.authenticate('bearer',{session:false}));
+usersRouter.get(
     '/user_list',
     function(req, res, next) {
     	req.permission_id = 'get_users_list';
@@ -28,11 +28,11 @@ dashboardRouter.get(
     },
     authorization.isAuthorized,
     validator.validateReq,
-    dashboardController.getUsersList,
-    dashboardController.sendResponse
+    usersController.getUsersList,
+    usersController.sendResponse
 );
 
-dashboardRouter.post(
+usersRouter.post(
     '/approve',
     function(req, res, next) {
     	req.permission_id = 'update_user_approval_status';
@@ -51,11 +51,11 @@ dashboardRouter.post(
       next();
     },
     validator.validateReq,
-    dashboardController.updateApprovalStatus,
-    dashboardController.sendResponse
+    usersController.updateApprovalStatus,
+    usersController.sendResponse
 );
 
-dashboardRouter.post(
+usersRouter.post(
     '/activate',
     function(req, res, next) {
     	req.permission_id = 'update_user_active_status';
@@ -74,8 +74,8 @@ dashboardRouter.post(
       next();
     },
     validator.validateReq,
-    dashboardController.updateApprovalStatus,
-    dashboardController.sendResponse
+    usersController.updateApprovalStatus,
+    usersController.sendResponse
 );
 
-module.exports = dashboardRouter;
+module.exports = usersRouter;
