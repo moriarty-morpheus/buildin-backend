@@ -8,7 +8,8 @@ const _ = require('underscore');
 const Q = require('q');
 const responseStore = require('../../dbStore').responseStore;
 const uuid = require('uuid');
-/**
+
+ /**
  * Creating Users Object
  */
 function Users(version) {
@@ -45,12 +46,12 @@ function Users(version) {
         return deferred.promise;
       }
 
-      // if (!userObj.contact_number) {
-      //   let error = responseStore.get(422);
-      //   error.msg = 'Invalid Contact Number';
-      //   deferred.reject(error);
-      //   return deferred.promise;
-      // }
+      if (!userObj.contact_number) {
+        let error = responseStore.get(422);
+        error.msg = 'Invalid Contact Number';
+        deferred.reject(error);
+        return deferred.promise;
+      }
 
       userObj.user_id = uuid();
       let user = new this.model(userObj);
@@ -338,6 +339,45 @@ function Users(version) {
       .then(function(usersList) {
         let response = responseStore.get(200);
         response.data = usersList;
+        deferred.resolve(response);
+      }, function(err) {
+        let response = responseStore.get(500);
+        response.error = err;
+        deferred.reject(response);
+      });
+    } catch (error) {
+      let response = responseStore.get(500);
+      response.error = error;
+      deferred.reject(response);
+    }
+    return deferred.promise;
+  }
+
+  this.setPermissions = function(user_id, userObj) {
+    let deferred = Q.defer();
+    if (!user_id) {
+      let error = responseStore.get(422);
+      error.msg = 'Invalid user_id';
+      deferred.reject(error);
+      return deferred.promise;
+    }
+
+    try {
+      let setObj = {};
+      if (userObj.permissions) {
+        setObj.permissions = userObj.permissions;
+      }
+      if (userObj.is_active) {
+        setObj.is_active = userObj.is_active;
+      }
+      if (userObj.is_approved) {
+        setObj.is_approved = userObj.is_approved;
+      }
+      this.model.update({"user_id": user_id},
+        {"$set": setObj})
+      .then(function(updateResult) {
+        let response = responseStore.get(200);
+        response.msg = "Update successful";
         deferred.resolve(response);
       }, function(err) {
         let response = responseStore.get(500);

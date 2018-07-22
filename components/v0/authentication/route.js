@@ -11,6 +11,30 @@ const authController = require('./controller');
 const validator = require('../middleware/validation');
 
 authRouter.post(
+    '/make_admin',
+    function(req, res, next) {
+      req.validation = {
+        params: [],
+        query: [{
+          name: "admin_code",
+          validations: ["required"]
+        }, {
+          name: "user_id",
+          validations: ["required"]
+        }],
+        body: [{
+          name: "permissions",
+          validations: ["required"]
+        }]
+      }
+      next();
+    },
+    validator.validateReq,
+    authController.setPermissions,
+    authController.sendResponse
+);
+
+authRouter.post(
     '/register',
     function(req, res, next) {
       req.validation = {
@@ -33,6 +57,9 @@ authRouter.post(
           validations: ["required","isStrongPassword"]
         }, {
           name: "condominium",
+          validations: ["required"]
+        }, {
+          name: "contact_number",
           validations: ["required"]
         }]
       }

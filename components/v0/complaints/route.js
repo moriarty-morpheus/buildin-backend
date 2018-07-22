@@ -16,7 +16,7 @@ complaintsRouter.use(passport.authenticate('bearer',{session:false}));
 complaintsRouter.get(
   '/list',
   function(req, res, next) {
-  	req.permission_id = 'get_users_list';
+  	req.permission_id = 'get_all_complaints_list';
   	next();
   },
   function(req, res, next) {
@@ -36,7 +36,7 @@ complaintsRouter.get(
 complaintsRouter.get(
   '/list/:user_id',
   function(req, res, next) {
-  	req.permission_id = 'get_users_list';
+  	req.permission_id = 'get_own_complaints_list';
   	next();
   },
   function(req, res, next) {
@@ -59,7 +59,7 @@ complaintsRouter.get(
 complaintsRouter.get(
   '/:complaint_id',
   function(req, res, next) {
-  	req.permission_id = 'get_users_list';
+  	req.permission_id = 'get_complaint';
   	next();
   },
   function(req, res, next) {
@@ -82,7 +82,7 @@ complaintsRouter.get(
 complaintsRouter.put(
   '/:complaint_id',
   function(req, res, next) {
-  	req.permission_id = 'get_users_list';
+  	req.permission_id = 'edit_complaint';
   	next();
   },
   function(req, res, next) {
@@ -105,7 +105,7 @@ complaintsRouter.put(
 complaintsRouter.delete(
   '/:complaint_id',
   function(req, res, next) {
-  	req.permission_id = 'get_users_list';
+  	req.permission_id = 'delete_complaint';
   	next();
   },
   function(req, res, next) {
@@ -128,7 +128,7 @@ complaintsRouter.delete(
 complaintsRouter.post(
     '/',
     function(req, res, next) {
-    	req.permission_id = 'get_users_list';
+    	req.permission_id = 'add_complaint';
     	next();
     },
     authorization.isAuthorized,

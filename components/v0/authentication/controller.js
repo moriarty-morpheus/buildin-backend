@@ -13,6 +13,7 @@ const responseStore = require('../../utility/store').responseStore;
 const logger = require('../../utility/userLogs').logger;
 const logFn = require('../../utility/userLogs').logFn;
 const constants = require('../../utility/constants');
+const componentConstants = require('./constants');
 const helper = require('./helper');
 const Users = new actionsStore.Users('v0');
 const Sessions = new actionsStore.Sessions('v0');
@@ -62,6 +63,7 @@ controller.register = function(req, res, next) {
         }
         req.body.is_approved = false;
         req.body.is_active = false;
+        req.body.permissions = componentConstants.defaultPermissions;
         let createUserPromise = Users.createUser(req.body);
         createUserPromise.then(function(result) {
           let emailsPromise = helper.sendRegiterEmails(
@@ -409,6 +411,56 @@ controller.resetPassword = function(req, res, next) {
     res.error = error;
     res.finalResponse = response;
     res.finalMessage = "resetPassword cntrl error";
+    next();
+  }
+}
+
+/**
+ *  Set permissions for a user
+ *  @param {object}  req - request object.
+ *  @param {object}  res - response object.
+ *  @return {object}
+ */
+controller.setPermissions = function(req, res, next) {
+  logger.debug('setPermissions controller', logFn(_.omit(req, "body"), null, null));
+  logger.info('setPermissions controller', logFn(_.omit(req, "body"), null, null));
+  try {
+    let response;
+    let adminCode = req.query.admin_code;
+    if (!adminCode || adminCode !== componentConstants.adminCode) {
+      response = responseStore.get(403);
+      res.finalResponse = response;
+      res.finalMessage = "setPermissions cntrl admin_code error";
+      next();
+    }
+    let userObj = req.body;
+    let userId = req.query.user_id;
+    let editPermissionsPromise = Users.setPermissions(userId, userObj);
+    editPermissionsPromise.then(function(editResult) {
+      if (editResult.code === 200) {
+        response = responseStore.get(200);
+        response.message = "Permissions Setting Successful";
+        res.finalMessage = "Permissions Setting Successfil";
+        res.finalResponse = response;
+        next();
+      } else {
+        response = responseStore.get(500);
+        res.finalResponse = response;
+        res.finalMessage = "setPermissions cntrl editPermissionsPromise error";
+        next();
+      }
+    }, function(error) {
+      response = responseStore.get(500);
+      res.error = error;
+      res.finalResponse = response;
+      res.finalMessage = "setPermissions cntrl editPermissionsPromise error";
+      next();
+    });
+  } catch (error) {
+    response = responseStore.get(500);
+    res.error = error;
+    res.finalResponse = response;
+    res.finalMessage = "setPermissions cntrl error";
     next();
   }
 }
