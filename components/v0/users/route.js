@@ -36,7 +36,7 @@ usersRouter.get(
 usersRouter.get(
     '/my_data',
     function(req, res, next) {
-    	req.permission_id = 'get_users_list';
+    	req.permission_id = 'get_my_data';
     	next();
     },
     function(req, res, next) {

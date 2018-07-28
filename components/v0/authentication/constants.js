@@ -34,7 +34,7 @@ constants.messages = {
 
 constants.defaultPermissions = [
   'v0_add_complaint', 'v0_edit_complaint', 'v0_delete_complaint',
-  'v0_get_complaint'
+  'v0_get_complaint', 'v0_get_user', 'v0_get_tabs'
 ];
 
 constants.adminCode = "asdfghjkl";

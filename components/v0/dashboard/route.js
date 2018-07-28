@@ -15,7 +15,7 @@ dashboardRouter.use(passport.authenticate('bearer',{session:false}));
 dashboardRouter.get(
     '/tabs_list',
     function(req, res, next) {
-    	req.permission_id = 'get_users_list';
+    	req.permission_id = 'get_tabs_list';
     	next();
     },
     function(req, res, next) {

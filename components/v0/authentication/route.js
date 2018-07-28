@@ -11,7 +11,7 @@ const authController = require('./controller');
 const validator = require('../middleware/validation');
 
 authRouter.post(
-    '/make_admin',
+    '/set_permissions',
     function(req, res, next) {
       req.validation = {
         params: [],
