@@ -46,12 +46,12 @@ function Users(version) {
         return deferred.promise;
       }
 
-      if (!userObj.contact_number) {
-        let error = responseStore.get(422);
-        error.msg = 'Invalid Contact Number';
-        deferred.reject(error);
-        return deferred.promise;
-      }
+      // if (!userObj.contact_number) {
+      //   let error = responseStore.get(422);
+      //   error.msg = 'Invalid Contact Number';
+      //   deferred.reject(error);
+      //   return deferred.promise;
+      // }
 
       userObj.user_id = uuid();
       let user = new this.model(userObj);
