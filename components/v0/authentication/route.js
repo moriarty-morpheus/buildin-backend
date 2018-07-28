@@ -59,8 +59,8 @@ authRouter.post(
           name: "condominium",
           validations: ["required"]
         }, {
-          name: "contact_number",
-          validations: ["required"]
+          name: "contact_number"
+          // validations: ["required"]
         }]
       }
       next();
