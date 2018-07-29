@@ -14,10 +14,10 @@ const rootSchema = require('./rootSchema');
 const config = require('config');
 const collections = config.get('mongoConfig').collections;
 const userStatusList = [
-  "Open", "Reopened", "Closed"
+  "Open", "Reopened", "Closed", "Withdraw"
 ];
 const adminStatusList = [
-  "Accepted", "Rejected", "Pending", "Resolved", "In Progress"
+  "Accepted", "Rejected", "Pending", "Resolved", "In Progress", "Withdrawn"
 ];
 
 /**
@@ -27,6 +27,12 @@ const complaintsSchema = rootSchema.getRootSchema();
 complaintsSchema.add({
   user_id: {type: String, required: true},
   name: {type: String, match: /[a-zA-Z]+/, required: true},
+  email: {
+      type: String,
+      match: /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+      required: true
+  },
+  contact_number: {type: String, required: false},
   complaint_id: {type: String, required: true},
   title: {type: String, required: true},
   location: {type: Object, required: false},

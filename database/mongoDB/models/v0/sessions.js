@@ -22,6 +22,12 @@ sessionSchema.add({
     first_name: {type: String, match: /[a-zA-Z]+/, required: false},
     last_name: {type: String, match: /[a-zA-Z]+/, required: false},
     user_name: {type: String, match: /[a-zA-Z0-9]+/, required: true},
+    email: {
+        type: String,
+        match: /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
+        required: true
+    },
+    contact_number: {type: String, required: false},
     access_token: {type: String, required: true},
     user_id: {type: String, required: true},
     permissions: {type: Array, required: false},

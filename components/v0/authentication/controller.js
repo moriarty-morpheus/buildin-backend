@@ -135,7 +135,7 @@ controller.login = function(req, res, next) {
           createTokenPromise.then(function(tokenResult) {
             response = responseStore.get(200);
             response.data = _.omit(accessTokenObj,
-              ["hashed_passowrd", "email", "contact_number"]
+              ["hashed_password"]
             );
             res.finalResponse = response;
             res.finalMessage = "login cntrl success";
