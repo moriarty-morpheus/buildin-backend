@@ -11,7 +11,8 @@ const mongoConfig = {
         products: 'products',
         sessions: 'sessions',
         passwordTokens: 'password_tokens',
-        complaints: 'complaints'
+        complaints: 'complaints',
+        announcements: 'announcements'
     },
     connections: {
         development: {

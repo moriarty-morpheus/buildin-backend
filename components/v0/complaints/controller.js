@@ -126,7 +126,7 @@ controller.addComplaint = function(req, res, next) {
   let response;
   addComplaintPromise.then(function(addResult) {
     if (addResult.code === 200) {
-      response = responseStore.get(201);
+      response = responseStore.get(200);
       response.message = "Complaint/Task saved successfully.";
       res.finalResponse = response;
       res.finalMessage = "addComplaint Successful";

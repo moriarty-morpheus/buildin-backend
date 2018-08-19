@@ -47,6 +47,13 @@ const rootRoutes = function(app) {
             require('./v' + k + '/complaints/route')
         );
         /**
+         * Announcements Gateway
+         */
+        app.use(
+            '/api/v' + apiVersions[k] + '/announcements',
+            require('./v' + k + '/announcements/route')
+        );
+        /**
          * Users Gateway
          */
         app.use(
