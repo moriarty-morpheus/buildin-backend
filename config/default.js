@@ -11,6 +11,7 @@ const mongoConfig = {
         products: 'products',
         sessions: 'sessions',
         passwordTokens: 'password_tokens',
+        inviteTokens: 'invite_tokens',
         complaints: 'complaints',
         announcements: 'announcements'
     },

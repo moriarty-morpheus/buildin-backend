@@ -18,6 +18,8 @@ const helper = require('./helper');
 const Users = new actionsStore.Users('v0');
 const Sessions = new actionsStore.Sessions('v0');
 const PasswordTokens = new actionsStore.PasswordTokens('v0');
+const InviteTokens = new actionsStore.InviteTokens('v0');
+
 /**
  * Authentication controller
  */
@@ -29,13 +31,14 @@ const controller = {};
  *  @param {object}  res - response object.
  *  @return {object}
  */
-controller.register = function(req, res, next) {
+controller.register = async function(req, res, next) {
   logger.debug('register controller', logFn(_.omit(req, "body"), null, null));
   logger.info('register controller', logFn(_.omit(req, "body"), null, null));
   let response;
   try {
     let userNamePromise = Users.checkUserName(req.body);
     let emailPromise = Users.checkEmail(req.body);
+    let inviteToken = req.query.invitation_id;
     Q.all([userNamePromise, emailPromise]).then(function(validations) {
       if (validations[0].code === 200 || validations[1].code === 200) {
         response = responseStore.get(409);
@@ -61,34 +64,62 @@ controller.register = function(req, res, next) {
         } else {
           req.body.is_admin = false;
         }
-        req.body.is_approved = false;
-        req.body.is_active = false;
-        req.body.permissions = componentConstants.defaultPermissions;
-        let createUserPromise = Users.createUser(req.body);
-        createUserPromise.then(function(result) {
-          let emailsPromise = helper.sendRegiterEmails(
-                                req, res, req.body.email, req.body.user_name
-                              );
-          emailsPromise.then(function(results) {
-            response = responseStore.get(201);
-            response.message = 'Hey! Your Account Is Created Successfully';
-            res.finalResponse = response;
-            res.finalMessage = "register cntrl Success";
-            next();
+        let invitationPromise;
+        if (inviteToken) {
+          invitationPromise = InviteTokens.getTokenByEmail({'email': req.body.email});
+        } else {
+          let deferred = Q.defer();
+          deferred.resolve(null);
+          invitationPromise = deferred.promise;
+        }
+        invitationPromise.then(function(invitationResult) {
+          if (inviteToken) {
+            if (invitationResult && invitationResult.code === 200
+              && invitationResult.data.invite_token === inviteToken) {
+              req.body.is_approved = true;
+              req.body.is_active = true;
+            } else {
+              req.body.is_approved = false;
+              req.body.is_active = false;
+            }
+          } else {
+            req.body.is_approved = false;
+            req.body.is_active = false;
+          }
+
+          req.body.permissions = componentConstants.defaultPermissions;
+          let createUserPromise = Users.createUser(req.body);
+          createUserPromise.then(function(result) {
+            let emailsPromise = helper.sendRegiterEmails(
+                                  req, res, req.body.email, req.body.user_name
+                                );
+            emailsPromise.then(function(results) {
+              response = responseStore.get(201);
+              response.message = 'Hey! Your Account Is Created Successfully';
+              res.finalResponse = response;
+              res.finalMessage = "register cntrl Success";
+              next();
+            }, function(error) {
+              response = responseStore.get(500);
+              res.error = error;
+              res.finalResponse = response;
+              res.finalMessage = "register cntrl emailPromises error";
+              next();
+            })
           }, function(error) {
             response = responseStore.get(500);
             res.error = error;
             res.finalResponse = response;
-            res.finalMessage = "register cntrl emailPromises error";
+            res.finalMessage = "register cntrl createUserPromise error";
             next();
-          })
+          });
         }, function(error) {
           response = responseStore.get(500);
           res.error = error;
           res.finalResponse = response;
-          res.finalMessage = "register cntrl createUserPromise error";
+          res.finalMessage = "register cntrl invitationPromise error";
           next();
-        });
+        })
       }
     }, function(error) {
       response = responseStore.get(500);

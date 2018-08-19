@@ -4,6 +4,7 @@ const actionsStore = {
     Users: require('./mongoDB/actions/users').Users,
     Sessions: require('./mongoDB/actions/sessions').Sessions,
     PasswordTokens: require('./mongoDB/actions/passwordTokens').PasswordTokens,
+    InviteTokens: require('./mongoDB/actions/inviteTokens').InviteTokens,
     Complaints: require('./mongoDB/actions/complaints').Complaints,
     Announcements: require('./mongoDB/actions/announcements').Announcements
 }

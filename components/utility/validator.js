@@ -29,7 +29,19 @@ const validator = {
   isEmail: function(value) {
     let emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return emailRegEx.test(value);
-  }
+  },
+  isEmails: function(value) {
+    let emailRegEx = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    for (let k = 0; k < value.length; k++) {
+      if (!emailRegEx.test(value)) {
+        return false;
+      }
+    }
+    return true;
+  },
+  isArray: function(value) {
+    return Array.isArray(value);
+  },
 };
 
 module.exports = validator;
